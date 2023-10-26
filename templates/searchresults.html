@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Search Results</title>
+</head>
+<body>
+  <div class="container">
+    <h2>Flight Search Results</h2>
+    {% if flights %}
+      <table>
+        <tr>
+          <th>Airline</th>
+          <th>Source Airport</th>
+          <th>Destination Airport</th>
+          <!-- Add more columns as needed -->
+        </tr>
+        {% for flight in flights %}
+          <tr>
+            <td>{{ flight['Airline'] }}</td>
+            <td>{{ flight['Source Airport'] }}</td>
+            <td>{{ flight['Destination Airport'] }}</td>
+            <!-- Add more data as needed -->
+          </tr>
+        {% endfor %}
+      </table>
+    {% else %}
+      <p>No flights found.</p>
+    {% endif %}
+    <a href="{{ url_for('search') }}">Back to Search</a>
+  </div>
+</body>
+</html>

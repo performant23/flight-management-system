@@ -293,16 +293,28 @@ def search():
         source = request.form.get('source')
         destination = request.form.get('destination')
 
-        cur = con.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        
-        # Construct the query for SELECT with filtering
-        query = """
--- Find direct and indirect flights from UK to US
+        # Store the form data in the session so it can be accessed in the /search/results route
+        session['source'] = source
+        session['destination'] = destination
+
+        return redirect(url_for('search_results'))
+    else:
+        return render_template("searchflights.html")
+
+@app.route("/search/results", methods=['GET'])
+def search_results():
+    source = session.get('source')
+    destination = session.get('destination')
+
+    cur = con.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    
+    query = """
+    -- Find direct and indirect flights from UK to US
 WITH RECURSIVE FlightPaths AS (
   -- Base case: direct flights
   SELECT
     r."Airline",
-    r."Airline ID", 
+    r."Airline ID",
     r."Price",
     a1."Name" AS "Source Airport",
     a1."Country" AS "Source Country",
@@ -357,14 +369,12 @@ FROM
   FlightPaths
 ORDER BY
   "hops";
-        """
-        cur.execute(query, {'source': source, 'destination': destination})
+    """
+    cur.execute(query, {'source': source, 'destination': destination})
 
-        result = cur.fetchall()
+    result = cur.fetchall()
 
-        return render_template("searchflights.html", flights=result)
-    else:
-        return render_template("searchflights.html")
+    return render_template("searchresults.html", flights=result)
 
 
 if __name__ == "__main__":

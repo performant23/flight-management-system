@@ -7,9 +7,9 @@ import re
 app = Flask(__name__)
 app.secret_key = "flight_planner"
 DB_HOST = "localhost"
-DB_NAME = "project"
+DB_NAME = "postgres"
 DB_USER = "postgres"
-DB_PASS = "@Laldinpuia69"
+DB_PASS = "Rutamkathale55$"
 con = psycopg2.connect(database=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
 app.permanent_session_lifetime = timedelta(minutes=5)
 
@@ -231,12 +231,6 @@ LIMIT 10;
 
     return render_template("cheapestflights.html", cheapest_flights=cheapest_flights)
 
-@app.route('/searchflights')
-def searchflights():
-    cur = con.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    query
-
-    return render_template("searchflights.html")
 
 
 
@@ -291,6 +285,87 @@ def register():
     elif request.method == 'POST':
         message = 'Please fill out the form!'
     return render_template('register.html', message=message)
+
+
+@app.route("/search", methods=['GET', 'POST'])
+def search():
+    if request.method == 'POST':
+        source = request.form.get('source')
+        destination = request.form.get('destination')
+
+        cur = con.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        
+        # Construct the query for SELECT with filtering
+        query = """
+-- Find direct and indirect flights from UK to US
+WITH RECURSIVE FlightPaths AS (
+  -- Base case: direct flights
+  SELECT
+    r."Airline",
+    r."Airline ID", 
+    r."Price",
+    a1."Name" AS "Source Airport",
+    a1."Country" AS "Source Country",
+    a2."Name" AS "Destination Airport",
+    a2."Country" AS "Destination Country",
+    a1."Name" || '->' || a2."Name" AS "Path",
+    0 AS "hops"
+  FROM
+    Routes r
+    JOIN Airports a1 ON r."Source Airport ID" = a1."Airport ID"
+    JOIN Airports a2 ON r."Destination Airport ID" = a2."Airport ID"
+  WHERE
+    a1."Country" = 'United Kingdom'
+    AND a2."Country" = 'United States'
+  
+  UNION ALL
+  
+  -- Recursive case: indirect flights with one stop
+  SELECT
+    r1."Airline",
+    r1."Airline ID",
+    r1."Price" + r2."Price" AS "Price",
+    a1."Name" AS "Source Airport",
+    a1."Country" AS "Source Country",
+    a3."Name" AS "Destination Airport",
+    a3."Country" AS "Destination Country",
+    a1."Name" || '->' || a2."Name" || '->' || a3."Name" AS "Path",
+    1 AS "hops"
+  FROM
+    Routes r1
+    JOIN Airports a1 ON r1."Source Airport ID" = a1."Airport ID"
+    JOIN Routes r2 ON r1."Destination Airport ID" = r2."Source Airport ID"
+    JOIN Airports a2 ON r2."Source Airport ID" = a2."Airport ID"
+    JOIN Airports a3 ON r2."Destination Airport ID" = a3."Airport ID"
+  WHERE
+    a1."Country" = 'United Kingdom'
+    AND a3."Country" = 'United States'
+    AND a2."Country" <> 'United Kingdom'
+    AND a2."Country" <> 'United States'
+)
+SELECT
+  "Airline",
+  "Airline ID",
+  "Price",
+  "Source Airport",
+  "Source Country",
+  "Destination Airport",
+  "Destination Country",
+  "Path",
+  "hops"
+FROM
+  FlightPaths
+ORDER BY
+  "hops";
+        """
+        cur.execute(query, {'source': source, 'destination': destination})
+
+        result = cur.fetchall()
+
+        return render_template("searchflights.html", flights=result)
+    else:
+        return render_template("searchflights.html")
+
 
 if __name__ == "__main__":
     app.run(debug=True)

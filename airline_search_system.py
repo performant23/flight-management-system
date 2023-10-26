@@ -1,3 +1,5 @@
+import csv
+from flask import render_template, request
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 import psycopg2
 import psycopg2.extras
@@ -10,8 +12,10 @@ DB_HOST = "localhost"
 DB_NAME = "postgres"
 DB_USER = "postgres"
 DB_PASS = "Rutamkathale55$"
-con = psycopg2.connect(database=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
+con = psycopg2.connect(database=DB_NAME, user=DB_USER,
+                       password=DB_PASS, host=DB_HOST)
 app.permanent_session_lifetime = timedelta(minutes=5)
+
 
 @app.route("/")
 def home():
@@ -21,12 +25,11 @@ def home():
     list_airline_names = [row["Name"] for row in cur.fetchall()]
     return render_template("index.html", list_airline_names=list_airline_names)
 
-from flask import render_template, request
 
 @app.route("/airlinedirectories", methods=['GET', 'POST'])
 def airlinedir():
     cur = con.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    
+
     if request.method == 'POST':
         search_term = request.form.get('search_term')
 
@@ -45,28 +48,30 @@ def airlinedir():
 
     return render_template("airlines.html", list_airlines=result_all)
 
+
 @app.route('/flightwonders')
 def flightwon():
     return render_template("flightwonders.html")
-    
+
+
 @app.route('/longest_flights')
 def longest_flights():
     cur = con.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
     query = """
-            SELECT 
+            SELECT
                 src_airport."Name" AS Source_Airport_Name,
                 dest_airport."Name" AS Destination_Airport_Name,
                 routes."Departure Time",
                 routes."Arrival Time",
                 (EXTRACT(EPOCH FROM routes."Arrival Time") - EXTRACT(EPOCH FROM routes."Departure Time")) AS Flight_Duration
-            FROM 
+            FROM
                 Routes routes
-            JOIN 
+            JOIN
                 Airports src_airport ON routes."Source Airport ID" = src_airport."Airport ID"
-            JOIN 
+            JOIN
                 Airports dest_airport ON routes."Destination Airport ID" = dest_airport."Airport ID"
-            ORDER BY 
+            ORDER BY
                 Flight_Duration DESC
             LIMIT 10;
             """
@@ -81,7 +86,7 @@ def shortest_flights():
     cur = con.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
     query = """
-SELECT 
+SELECT
     src_airport."Name" AS Source_Airport_Name,
     src_country."Name" AS Source_Country,
     dest_airport."Name" AS Destination_Airport_Name,
@@ -89,19 +94,19 @@ SELECT
     routes."Departure Time",
     routes."Arrival Time",
     (EXTRACT(EPOCH FROM routes."Arrival Time") - EXTRACT(EPOCH FROM routes."Departure Time")) AS Flight_Duration
-FROM 
+FROM
     Routes routes
-JOIN 
+JOIN
     Airports src_airport ON routes."Source Airport ID" = src_airport."Airport ID"
-JOIN 
+JOIN
     Airports dest_airport ON routes."Destination Airport ID" = dest_airport."Airport ID"
-JOIN 
+JOIN
     Country src_country ON src_airport."Country" = src_country."Name"
-JOIN 
+JOIN
     Country dest_country ON dest_airport."Country" = dest_country."Name"
-WHERE 
+WHERE
     routes."Departure Time" < routes."Arrival Time"
-ORDER BY 
+ORDER BY
     Flight_Duration ASC
 LIMIT 10;
             """
@@ -116,19 +121,19 @@ def busiest_routes():
     cur = con.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
     query = """
-SELECT 
+SELECT
     src_airport."Name" AS Source_Airport_Name,
     dest_airport."Name" AS Destination_Airport_Name,
     COUNT(*) AS Number_of_Flights
-FROM 
+FROM
     Routes routes
-JOIN 
+JOIN
     Airports src_airport ON routes."Source Airport ID" = src_airport."Airport ID"
-JOIN 
+JOIN
     Airports dest_airport ON routes."Destination Airport ID" = dest_airport."Airport ID"
-GROUP BY 
+GROUP BY
     Source_Airport_Name, Destination_Airport_Name
-ORDER BY 
+ORDER BY
     Number_of_Flights DESC
 LIMIT 10;
             """
@@ -137,31 +142,32 @@ LIMIT 10;
 
     return render_template("busiestroutes.html", busiest_routes=busiest_routes)
 
+
 @app.route('/expensive_flights')
 def expensive_flights():
     cur = con.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
     query = """
-SELECT 
+SELECT
     airline."Name" AS Airline_Name,
     src_airport."Name" AS Source_Airport_Name,
     src_country."Name" AS Source_Country,
     dest_airport."Name" AS Destination_Airport_Name,
     dest_country."Name" AS Destination_Country,
     routes."Price"
-FROM 
+FROM
     Routes routes
-JOIN 
+JOIN
     Airline airline ON routes."Airline ID" = airline."Airline ID"
-JOIN 
+JOIN
     Airports src_airport ON routes."Source Airport ID" = src_airport."Airport ID"
-JOIN 
+JOIN
     Airports dest_airport ON routes."Destination Airport ID" = dest_airport."Airport ID"
-JOIN 
+JOIN
     Country src_country ON src_airport."Country" = src_country."Name"
-JOIN 
+JOIN
     Country dest_country ON dest_airport."Country" = dest_country."Name"
-ORDER BY 
+ORDER BY
     routes."Price" DESC
 LIMIT 10;
             """
@@ -170,26 +176,27 @@ LIMIT 10;
 
     return render_template("expensiveflights.html", expensive_flights=expensive_flights)
 
+
 @app.route('/idle_routes')
 def idle_routes():
     cur = con.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
     query = """
-SELECT 
+SELECT
     src_airport."Name" AS Source_Airport_Name,
     src_airport."Country" AS Source_Country,
     dest_airport."Country" AS Destination_Country,
     dest_airport."Name" AS Destination_Airport_Name,
     COUNT(*) AS Number_of_Flights
-FROM 
+FROM
     Routes routes
-JOIN 
+JOIN
     Airports src_airport ON routes."Source Airport ID" = src_airport."Airport ID"
-JOIN 
+JOIN
     Airports dest_airport ON routes."Destination Airport ID" = dest_airport."Airport ID"
-GROUP BY 
+GROUP BY
     Source_Airport_Name, Destination_Airport_Name, Source_Country, Destination_Country
-ORDER BY 
+ORDER BY
     Number_of_Flights ASC
 LIMIT 10;
             """
@@ -198,31 +205,32 @@ LIMIT 10;
 
     return render_template("idleroutes.html", idle_routes=idle_routes)
 
+
 @app.route('/cheapest_flights')
 def cheapest_flights():
     cur = con.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
     query = """
-SELECT 
+SELECT
     airline."Name" AS Airline_Name,
     src_airport."Name" AS Source_Airport_Name,
     src_country."Name" AS Source_Country,
     dest_airport."Name" AS Destination_Airport_Name,
     dest_country."Name" AS Destination_Country,
     routes."Price"
-FROM 
+FROM
     Routes routes
-JOIN 
+JOIN
     Airline airline ON routes."Airline ID" = airline."Airline ID"
-JOIN 
+JOIN
     Airports src_airport ON routes."Source Airport ID" = src_airport."Airport ID"
-JOIN 
+JOIN
     Airports dest_airport ON routes."Destination Airport ID" = dest_airport."Airport ID"
-JOIN 
+JOIN
     Country src_country ON src_airport."Country" = src_country."Name"
-JOIN 
+JOIN
     Country dest_country ON dest_airport."Country" = dest_country."Name"
-ORDER BY 
+ORDER BY
     routes."Price" ASC
 LIMIT 10;
             """
@@ -232,8 +240,6 @@ LIMIT 10;
     return render_template("cheapestflights.html", cheapest_flights=cheapest_flights)
 
 
-
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     message = ''
@@ -241,11 +247,14 @@ def login():
         email = request.form['email']
         password = request.form['password']
         cur = con.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        cur.execute('SELECT * FROM "user" WHERE email = %s AND password = %s', (email, password,))
-        user = cur.fetchone()  # Use fetchone() instead of fetchall() since you're expecting one user
+        cur.execute(
+            'SELECT * FROM "user" WHERE email = %s AND password = %s', (email, password,))
+        # Use fetchone() instead of fetchall() since you're expecting one user
+        user = cur.fetchone()
         if user:
             session['loggedin'] = True
-            session['phonenumber'] = user['phone number']  # Use correct column name 'phone_number'
+            # Use correct column name 'phone_number'
+            session['phonenumber'] = user['phone number']
             session['name'] = user['name']
             session['email'] = user['email']
             message = 'Logged in successfully!'
@@ -254,12 +263,14 @@ def login():
             message = 'Please enter correct email / password!'
     return render_template('login.html', message=message)
 
+
 @app.route('/logout')
 def logout():
     session.pop('loggedin', None)
     session.pop('userid', None)
     session.pop('email', None)
     return redirect(url_for('login'))
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -279,7 +290,8 @@ def register():
         elif not userName or not password or not email:
             message = 'Please fill out the form!'
         else:
-            cursor.execute('INSERT INTO "user" VALUES (%s, %s, %s, %s)', (userName, email, password, phoneNumber))
+            cursor.execute('INSERT INTO "user" VALUES (%s, %s, %s, %s)',
+                           (userName, email, password, phoneNumber))
             con.commit()
             message = 'You have successfully registered!'
     elif request.method == 'POST':
@@ -289,17 +301,23 @@ def register():
 
 @app.route("/search", methods=['GET', 'POST'])
 def search():
+    # Read country names from CSV file
+    with open('Country.csv', 'r') as f:
+        reader = csv.DictReader(f)
+        countries = [row['Name'] for row in reader]
+
     if request.method == 'POST':
         source = request.form.get('source')
         destination = request.form.get('destination')
-
         # Store the form data in the session so it can be accessed in the /search/results route
         session['source'] = source
         session['destination'] = destination
 
         return redirect(url_for('search_results'))
     else:
-        return render_template("searchflights.html")
+        return render_template("searchflights.html", countries=countries)
+
+
 
 @app.route("/search/results", methods=['GET'])
 def search_results():

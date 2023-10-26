@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}User{% endblock %}
+
+{% block content %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for msg in messages %}
+                <p>{{ msg }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <hr>
+
+    <h2>Bookings:</h2>
+    {% if flights %}
+        <ul>
+            {% for flight in flights %}a
+                <li>{{ flight.origin }} to {{ flight.destination }} on {{ flight.start_date }} - {{ flight.return_date }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No flights added yet.</p>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Airline Directories{% endblock %}
+{% block content %}
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            text-align: center;
+            padding: 50px;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            color: #007BFF; /* Set a color that suits your style */
+        }
+
+        p {
+            font-size: 1.5em;
+            margin-bottom: 30px;
+            color: #555;
+        }
+
+        input {
+            width: 80%;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007BFF;
+            color: white;
+        }
+    </style>
+
+    <h1>Airline Directories</h1>
+
+    <form method="POST" action="/airlinedirectories">
+        <input type="text" name="search_term" placeholder="Search by Name, or Country...">
+        <input type="submit" value="Search">
+    </form>
+
+    <table id="airline-table">
+        <tr>
+            <th>Airline ID</th>
+            <th>Name</th>
+            <th>Alias</th>
+            <th>IATA</th>
+            <th>ICAO</th>
+            <th>Callsign</th>
+            <th>Country</th>
+            <th>Active</th>
+        </tr>
+        
+        {% if list_airlines %}
+            {% for row in list_airlines %}
+                <tr>
+                    <td>{{ row["Airline ID"] }}</td>
+                    <td>{{ row["Name"] }}</td>
+                    <td>{{ row["Alias"] }}</td>
+                    <td>{{ row["IATA"] }}</td>
+                    <td>{{ row["ICAO"] }}</td>
+                    <td>{{ row["Callsign"] }}</td>
+                    <td>{{ row["Country"] }}</td>
+                    <td>{{ row["Active"] }}</td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="8">No matching records found.</td>
+            </tr>
+        {% endif %}
+    </table>
+{% endblock %}

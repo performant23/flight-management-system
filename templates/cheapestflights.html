@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cheapest Flights</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: rgb(224, 225, 228);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007BFF;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cheapest Flights</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Airline Name</th>
+                <th>Source Airport</th>
+                <th>Source Country</th>
+                <th>Destination Airport</th>
+                <th>Destination Country</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for flight in cheapest_flights %}
+                <tr>
+                    <td>{{ flight['airline_name'] }}</td>
+                    <td>{{ flight['source_airport_name'] }}</td>
+                    <td>{{ flight['source_country'] }}</td>
+                    <td>{{ flight['destination_airport_name'] }}</td>
+                    <td>{{ flight['destination_country'] }}</td>
+                    <td>{{ flight['Price'] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+</html>

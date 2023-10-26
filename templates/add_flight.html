@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.8.0/css/pikaday.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        input[type="submit"] {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        /* Add a bit of spacing between sections */
+        div {
+            margin-bottom: 20px;
+        }
+
+        /* Flight results section styles */
+        #flight-results {
+            display: none;
+            margin-top: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #4caf50;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <form action="/flight_search" method="post">
+        <h2>Search Flights</h2>
+
+        <div>
+            <label for="origin">Origin:</label>
+            <input type="text" name="origin" required>
+        </div>
+
+        <div>
+            <label for="destination">Destination:</label>
+            <input type="text" name="destination" required>
+        </div>
+
+        <div>
+            <label for="start_date">Start Date:</label>
+            <input type="text" name="start_date" id="start_date" required>
+        </div>
+
+        <div>
+            <label for="return_date">Return Date:</label>
+            <input type="text" name="return_date" id="return_date" required>
+        </div>
+
+        <div>
+            <label for="num_people">Number of People:</label>
+            <input type="number" name="num_people" id="num_people" min="1" required>
+        </div>
+
+        <div>
+            <input type="submit" value="Search Flights">
+        </div>
+    </form>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.8.0/pikaday.min.js"></script>
+    <script>
+        var datepicker = new Pikaday({
+            field: document.getElementById('start_date'),
+            format: 'YYYY-MM-DD',
+            yearRange: [moment().year(), moment().year() + 5],
+            showYearDropdown: true,
+            autoClose: true
+        });
+
+        var returnDatepicker = new Pikaday({
+            field: document.getElementById('return_date'),
+            format: 'YYYY-MM-DD',
+            yearRange: [moment().year(), moment().year() + 5],
+            showYearDropdown: true,
+            autoClose: true
+        });
+    </script>
+</body>
+
+</html>

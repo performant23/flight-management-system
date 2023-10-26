@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Wonders</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .flight-wonder {
+            background-color: #007BFF;
+            color: white;
+            padding: 20px;
+            margin: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .flight-wonder:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="flight-wonder" onclick="window.location.href='longest_flights'">
+        10 Longest Flights
+    </div>
+
+    <div class="flight-wonder" onclick="window.location.href='shortest_flights'">
+        10 Shortest Flights
+    </div>
+
+    <div class="flight-wonder" onclick="window.location.href='busiest_routes'">
+        10 Busiest Routes
+    </div>
+
+    <div class="flight-wonder" onclick="window.location.href='idle_routes'">
+        10 Most Idle Routes
+    </div>
+
+    <div class="flight-wonder" onclick="window.location.href='expensive_flights'">
+        Most Expensive Flights
+    </div>
+
+    <div class="flight-wonder" onclick="window.location.href='cheapest_flights'">
+        Cheapest Flights
+    </div>
+
+</body>
+</html>

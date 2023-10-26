@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10 Longest Flights</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: rgb(224, 225, 228);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007BFF;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Top 10 Longest Flights</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Source Airport</th>
+                <th>Destination Airport</th>
+                <th>Departure Time</th>
+                <th>Arrival Time</th>
+                <th>Flight Duration (seconds)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for flight in longest_flights %}
+                <tr>
+                    <td>{{ flight['source_airport_name'] }}</td>
+                    <td>{{ flight['destination_airport_name'] }}</td>
+                    <td>{{ flight['Departure Time'] }}</td>
+                    <td>{{ flight['Arrival Time'] }}</td>
+                    <td>{{ flight['flight_duration'] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+</html>

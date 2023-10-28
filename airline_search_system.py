@@ -95,13 +95,16 @@ def shortest_flights():
 
     query = """
 SELECT
+    airline."Name" AS Airline_Name,
+    routes."Airline ID" AS Airline_ID,
     src_airport."Name" AS Source_Airport_Name,
-    src_country."Name" AS Source_Country,
     dest_airport."Name" AS Destination_Airport_Name,
-    dest_country."Name" AS Destination_Country,
+    src_airport."Country" AS Source_Country_Name,
+    dest_airport."Country" AS Destination_Country_Name,
     routes."Departure Time",
     routes."Arrival Time",
-    (EXTRACT(EPOCH FROM routes."Arrival Time") - EXTRACT(EPOCH FROM routes."Departure Time")) AS Flight_Duration
+    (EXTRACT(EPOCH FROM routes."Arrival Time") - EXTRACT(EPOCH FROM routes."Departure Time")) AS Flight_Duration,
+    routes."Price" AS Price
 FROM
     Routes routes
 JOIN
@@ -109,14 +112,13 @@ JOIN
 JOIN
     Airports dest_airport ON routes."Destination Airport ID" = dest_airport."Airport ID"
 JOIN
-    Country src_country ON src_airport."Country" = src_country."Name"
-JOIN
-    Country dest_country ON dest_airport."Country" = dest_country."Name"
+    Airline airline ON routes."Airline ID" = airline."Airline ID"
 WHERE
-    routes."Departure Time" < routes."Arrival Time"
+    EXTRACT(EPOCH FROM routes."Departure Time") < EXTRACT(EPOCH FROM routes."Arrival Time")
 ORDER BY
     Flight_Duration ASC
 LIMIT 10;
+
             """
     cur.execute(query)
     shortest_flights = cur.fetchall()
@@ -158,23 +160,25 @@ def expensive_flights():
     query = """
 SELECT
     airline."Name" AS Airline_Name,
+    routes."Airline ID" AS Airline_ID,
     src_airport."Name" AS Source_Airport_Name,
-    src_country."Name" AS Source_Country,
     dest_airport."Name" AS Destination_Airport_Name,
-    dest_country."Name" AS Destination_Country,
-    routes."Price"
+    src_airport."Country" AS Source_Country_Name,
+    dest_airport."Country" AS Destination_Country_Name,
+    routes."Departure Time",
+    routes."Arrival Time",
+    (EXTRACT(EPOCH FROM routes."Arrival Time") - EXTRACT(EPOCH FROM routes."Departure Time")) AS Flight_Duration,
+    routes."Price" AS Price
 FROM
     Routes routes
-JOIN
-    Airline airline ON routes."Airline ID" = airline."Airline ID"
 JOIN
     Airports src_airport ON routes."Source Airport ID" = src_airport."Airport ID"
 JOIN
     Airports dest_airport ON routes."Destination Airport ID" = dest_airport."Airport ID"
 JOIN
-    Country src_country ON src_airport."Country" = src_country."Name"
-JOIN
-    Country dest_country ON dest_airport."Country" = dest_country."Name"
+    Airline airline ON routes."Airline ID" = airline."Airline ID"
+    WHERE
+    EXTRACT(EPOCH FROM routes."Departure Time") < EXTRACT(EPOCH FROM routes."Arrival Time")
 ORDER BY
     routes."Price" DESC
 LIMIT 10;
@@ -221,23 +225,25 @@ def cheapest_flights():
     query = """
 SELECT
     airline."Name" AS Airline_Name,
+    routes."Airline ID" AS Airline_ID,
     src_airport."Name" AS Source_Airport_Name,
-    src_country."Name" AS Source_Country,
     dest_airport."Name" AS Destination_Airport_Name,
-    dest_country."Name" AS Destination_Country,
-    routes."Price"
+    src_airport."Country" AS Source_Country_Name,
+    dest_airport."Country" AS Destination_Country_Name,
+    routes."Departure Time",
+    routes."Arrival Time",
+    (EXTRACT(EPOCH FROM routes."Arrival Time") - EXTRACT(EPOCH FROM routes."Departure Time")) AS Flight_Duration,
+    routes."Price" AS Price
 FROM
     Routes routes
-JOIN
-    Airline airline ON routes."Airline ID" = airline."Airline ID"
 JOIN
     Airports src_airport ON routes."Source Airport ID" = src_airport."Airport ID"
 JOIN
     Airports dest_airport ON routes."Destination Airport ID" = dest_airport."Airport ID"
 JOIN
-    Country src_country ON src_airport."Country" = src_country."Name"
-JOIN
-    Country dest_country ON dest_airport."Country" = dest_country."Name"
+    Airline airline ON routes."Airline ID" = airline."Airline ID"
+    WHERE
+    EXTRACT(EPOCH FROM routes."Departure Time") < EXTRACT(EPOCH FROM routes."Arrival Time")
 ORDER BY
     routes."Price" ASC
 LIMIT 10;

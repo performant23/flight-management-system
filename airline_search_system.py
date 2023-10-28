@@ -61,20 +61,27 @@ def longest_flights():
 
     query = """
             SELECT
-                src_airport."Name" AS Source_Airport_Name,
-                dest_airport."Name" AS Destination_Airport_Name,
-                routes."Departure Time",
-                routes."Arrival Time",
-                (EXTRACT(EPOCH FROM routes."Arrival Time") - EXTRACT(EPOCH FROM routes."Departure Time")) AS Flight_Duration
-            FROM
-                Routes routes
-            JOIN
-                Airports src_airport ON routes."Source Airport ID" = src_airport."Airport ID"
-            JOIN
-                Airports dest_airport ON routes."Destination Airport ID" = dest_airport."Airport ID"
-            ORDER BY
-                Flight_Duration DESC
-            LIMIT 10;
+    airline."Name" AS Airline_Name,
+    routes."Airline ID" AS Airline_ID,
+    src_airport."Name" AS Source_Airport_Name,
+    dest_airport."Name" AS Destination_Airport_Name,
+    src_airport."Country" AS Source_Country_Name,
+    dest_airport."Country" AS Destination_Country_Name,
+    routes."Departure Time",
+    routes."Arrival Time",
+    (EXTRACT(EPOCH FROM routes."Arrival Time") - EXTRACT(EPOCH FROM routes."Departure Time")) AS Flight_Duration,
+    routes."Price" AS Price
+FROM
+    Routes routes
+JOIN
+    Airports src_airport ON routes."Source Airport ID" = src_airport."Airport ID"
+JOIN
+    Airports dest_airport ON routes."Destination Airport ID" = dest_airport."Airport ID"
+JOIN
+    Airline airline ON routes."Airline ID" = airline."Airline ID"
+ORDER BY
+    Flight_Duration DESC
+LIMIT 10;
             """
     cur.execute(query)
     longest_flights = cur.fetchall()

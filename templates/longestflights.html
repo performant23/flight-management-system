@@ -43,21 +43,31 @@
     <table>
         <thead>
             <tr>
+                <th>Airline Name</th>
                 <th>Source Airport</th>
                 <th>Destination Airport</th>
+                <th>Source Country</th>
+                <th>Destination Country</th>
+                <th>Airline ID</th>
                 <th>Departure Time</th>
                 <th>Arrival Time</th>
                 <th>Flight Duration (seconds)</th>
+                <th>Price (In Rupees)</th>
             </tr>
         </thead>
         <tbody>
             {% for flight in longest_flights %}
                 <tr>
+                    <td>{{ flight['airline_name'] }}</td>
                     <td>{{ flight['source_airport_name'] }}</td>
                     <td>{{ flight['destination_airport_name'] }}</td>
+                    <td>{{flight['source_country_name'] }}</td>
+                    <td>{{flight['destination_country_name'] }}</td>
+                    <td>{{flight['airline_id'] }}</td>
                     <td>{{ flight['Departure Time'] }}</td>
                     <td>{{ flight['Arrival Time'] }}</td>
                     <td>{{ flight['flight_duration'] }}</td>
+                    <td>{{ flight['price']}}</td>
                 </tr>
             {% endfor %}
         </tbody>

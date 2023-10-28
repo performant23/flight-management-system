@@ -1,19 +1,97 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Search Flights</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <!-- Add jQuery UI CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      color: #007BFF;
+      text-align: center;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      background-color: #007BFF;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 20px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+  </style>
 </head>
 <body>
   <div class="container">
     <h2>Search Flights</h2>
-    <form method="POST" action="/search">
+    <form method="POST" action="/search" onsubmit="showPopup();">
       <input type="text" id="source" placeholder="Source Country" name="source">
       <input type="text" id="destination" placeholder="Destination Country" name="destination">
+      <input type="date" id="travelDate" placeholder="Travel Date" name="travel_date">
+      <input type="date" id="returnDate" placeholder="Return Date" name="return_date">
+      <input type="number" id="numPeople" placeholder="Number of People" name="num_people" min="1">
       <button type="submit">Submit</button>
     </form>
+  </div>
+
+  <div class="popup" id="popup">
+    <p>Selected Values:</p>
+    <p id="selectedSource"></p>
+    <p id="selectedDestination"></p>
+    <p id="selectedTravelDate"></p>
+    <p id="selectedReturnDate"></p>
+    <p id="selectedNumPeople"></p>
+    <button onclick="hidePopup(); return false;">Close</button>
   </div>
 
   <!-- Add jQuery and jQuery UI scripts -->
@@ -22,12 +100,32 @@
 
   <script>
     $(function() {
-        var countries = {{countries|tojson|safe}};
+      var countries = {{countries|tojson|safe}};
 
       $("#source, #destination").autocomplete({
         source: countries
       });
     });
+
+    function showPopup() {
+      var source = $("#source").val();
+      var destination = $("#destination").val();
+      var travelDate = $("#travelDate").val();
+      var returnDate = $("#returnDate").val();
+      var numPeople = $("#numPeople").val();
+
+      $("#selectedSource").text("Source: " + source);
+      $("#selectedDestination").text("Destination: " + destination);
+      $("#selectedTravelDate").text("Travel Date: " + travelDate);
+      $("#selectedReturnDate").text("Return Date: " + returnDate);
+      $("#selectedNumPeople").text("Number of People: " + numPeople);
+
+      $("#popup").show();
+    }
+
+    function hidePopup() {
+      $("#popup").hide();
+    }
   </script>
 </body>
 </html>

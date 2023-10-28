@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorting Example</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            margin: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        /* Hide radio buttons */
+        input[type="radio"] {
+            display: none;
+        }
+
+        /* Style for the fake radio buttons */
+        .radio-container {
+            display: inline-block;
+            position: relative;
+            padding-left: 35px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            user-select: none;
+            color: #555;
+            transition: color 0.3s ease;
+        }
+
+        /* Create the fake radio buttons */
+        .radio-container::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #007BFF;
+            background-color: #fff;
+            border-radius: 50%;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
+
+        /* Style the dot/indicator */
+        .radio-container::after {
+            content: "";
+            position: absolute;
+            left: 7px;
+            top: 7px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: #007BFF;
+            display: none;
+        }
+
+        /* Show the dot when the radio button is checked */
+        input:checked + .radio-container::before {
+            border-color: #007BFF;
+            background-color: #007BFF;
+        }
+
+        input:checked + .radio-container::after {
+            display: block;
+        }
+
+        /* Style the anchor tag */
+        .radio-container a {
+            color: #007BFF;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        /* Hover effect */
+        .radio-container:hover {
+            color: #007BFF;
+        }
+
+        .radio-container:hover a {
+            color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<h1>SORT</h1>
+<div class="radio-container">
+    <input type="radio" name="sort" value="price" id="sort-price">
+    <label for="sort-price">
+        <a href="/sort/sortbyprice">Sort by PRICE</a>
+    </label>
+</div>
+
+<div class="radio-container">
+    <input type="radio" name="sort" value="time" id="sort-time">
+    <label for="sort-time">
+        <a href="https://example.com/sort-by-time">Sort by Time</a>
+    </label>
+</div>
+
+<div class="radio-container">
+    <input type="radio" name="sort" value="price-time" id="sort-price-time">
+    <label for="sort-price-time">
+        <a href="https://example.com/sort-by-price-time">Sort by Price + Time</a>
+    </label>
+</div>
+
+</body>
+</html>
+
+
+
+
+
+

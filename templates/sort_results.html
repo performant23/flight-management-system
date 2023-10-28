@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Results</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 1000px; /* Increase max-width for a wider container */
+      margin: 50px auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      color: #007BFF;
+      text-align: center;
+    }
+
+    .tab-container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .tab {
+      display: inline-block;
+      background-color: #007BFF;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    .tab:hover {
+      background-color: #0056b3;
+    }
+
+    table {
+      width: 100%; /* Set table width to 100% */
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #007BFF;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    p {
+      text-align: center;
+      color: #555;
+    }
+
+    a {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: #007BFF;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="tab-container">
+      <a href="{{ url_for('sort') }}" class="tab">Sort</a>
+    </div>
+
+    <h2>Flight Search Results</h2>
+
+    {% if flights %}
+  <table>
+    <tr>
+      <th>Airline</th>
+      <th>Airline ID</th>
+      <th>Source Airport</th>
+      <th>Source Country</th>
+      <th>Destination Airport</th>
+      <th>Destination Country</th>
+      <th>Path</th>
+      <th>Flight Duration</th>
+      <th>Price</th>
+      <th>Hops</th>
+    </tr>
+    {% for flight in flights %}
+      <tr>
+        <td>{{ flight['Airline'] }}</td>
+        <td>{{ flight['Airline ID'] }}</td>
+        <td>{{ flight['Source Airport'] }}</td>
+        <td>{{ flight['Source Country'] }}</td>
+        <td>{{ flight['Destination Airport'] }}</td>
+        <td>{{ flight['Destination Country'] }}</td>
+        <td>{{ flight['Path'] }}</td>
+        <td>{{ flight['Total Time'] }}</td> <!-- Update to Total Time -->
+        <td>{{ flight['Price'] }}</td>
+        <td>{{ flight['hops'] }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+{% else %}
+  <p>No flights found.</p>
+{% endif %}
+    <a href="{{ url_for('search') }}">Back to Search</a>
+  </div>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        div {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px; /* Increased width for better visibility of flight details */
+            margin: 20px auto;
+        }
+
+        p {
+            margin: 10px 0;
+            color: #555;
+        }
+
+        strong {
+            color: #333;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007BFF;
+            display: block;
+            margin-top: 10px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>User Profile</h1>
+        <p><strong>Name:</strong> {{ name }}</p>
+        <p><strong>Email:</strong> {{ email }}</p>
+
+        {% if booked_flights %}
+            <h2>Booked Flights</h2>
+            <ul>
+                {% for flight in booked_flights %}
+                    <li>
+                        <strong>Airline:</strong> {{ flight['Airline'] }}<br>
+                        <strong>Flight ID:</strong> {{ flight['Airline ID'] }}<br>
+                        <strong>Source Airport:</strong> {{ flight['Source Airport'] }}<br>
+                        <strong>Destination Airport:</strong> {{ flight['Destination Airport'] }}<br>
+                        <strong>Path:</strong> {{ flight['Path'] }}<br>
+                        <strong>Flight Duration:</strong> {{ flight['Flight Duration'] }} seconds<br>
+                        <strong>Price:</strong> {{ flight['Price'] }}<br>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No flights booked yet.</p>
+        {% endif %}
+
+        <a href="/" class="home-btn">Home</a>
+    </div>
+</body>
+</html>

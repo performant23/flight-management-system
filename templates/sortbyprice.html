@@ -81,54 +81,17 @@
 
     a:hover {
       text-decoration: underline;
-      
     }
-
-    .sort-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-select {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-button {
-  background-color: #007BFF;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 10px 20px;
-  cursor: pointer;
-  margin-left: 10px;
-}
   </style>
 </head>
 <body>
   <div class="container">
     <div class="tab-container">
+      <a href="{{ url_for('sortbyprice', source=source, destination=destination) }}" class="tab">Sort</a>
     </div>
+    
 
     <h2>Flight Search Results</h2>
-
-<form action="{{ url_for('sort') }}" method="post" class="sort-container">
-  <select name="sort_option" id="sort_option">
-    <option value="price">Sort by Price</option>
-    <option value="duration">Sort by Flight Duration</option>
-  </select>
-  <select name="sort_order" id="sort_order">
-    <option value="asc">Ascending</option>
-    <option value="desc">Descending</option>
-  </select>
-  <button type="submit" class="tab">Sort</button>
-</form>
-
-    
-    
 
     {% if flights %}
       <table>
@@ -143,8 +106,6 @@ button {
           <th>Flight Duration</th>
           <th>Price</th>
           <th>Hops</th>
-          <!-- New column for "Book Flight" -->
-          <th>Book Flight</th>
         </tr>
         {% for flight in flights %}
           <tr>
@@ -158,8 +119,6 @@ button {
             <td>{{ flight['Flight Duration'] }}</td>
             <td>{{ flight['Price'] }}</td>
             <td>{{ flight['hops'] }}</td>
-            <!-- Link to profile page for booking -->
-            <td><a href="/profile?flight_id={{ flight['Airline ID'] }}">Book Now</a></td>
           </tr>
         {% endfor %}
       </table>

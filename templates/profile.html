@@ -22,13 +22,13 @@
         }
 
         div {
-            background-color: #fff;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 400px; /* Increased width for better visibility of flight details */
-            margin: 20px auto;
-        }
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 1000px; /* Increased width for better visibility of flight details */
+    margin: 20px auto;
+}
 
         p {
             margin: 10px 0;
@@ -39,14 +39,25 @@
             color: #333;
         }
 
-        ul {
-            list-style-type: none;
-            padding: 0;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
         }
 
-        li {
-            border-bottom: 1px solid #ddd;
-            padding: 10px 0;
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007BFF;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
         }
 
         a {
@@ -67,24 +78,41 @@
         <p><strong>Name:</strong> {{ name }}</p>
         <p><strong>Email:</strong> {{ email }}</p>
 
-        {% if booked_flights %}
-            <h2>Booked Flights</h2>
-            <ul>
-                {% for flight in booked_flights %}
-                    <li>
-                        <strong>Airline:</strong> {{ flight['Airline'] }}<br>
-                        <strong>Flight ID:</strong> {{ flight['Airline ID'] }}<br>
-                        <strong>Source Airport:</strong> {{ flight['Source Airport'] }}<br>
-                        <strong>Destination Airport:</strong> {{ flight['Destination Airport'] }}<br>
-                        <strong>Path:</strong> {{ flight['Path'] }}<br>
-                        <strong>Flight Duration:</strong> {{ flight['Flight Duration'] }} seconds<br>
-                        <strong>Price:</strong> {{ flight['Price'] }}<br>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>No flights booked yet.</p>
-        {% endif %}
+        <h2>Booked Flight Details</h2>
+
+{% if booked_flight %}
+  <table>
+    <tr>
+      <th>Airline</th>
+      <th>Airline ID</th>
+      <th>Source Airport</th>
+      <th>Source Country</th>
+      <th>Destination Airport</th>
+      <th>Destination Country</th>
+      <th>Path</th>
+      <th>Flight Duration</th>
+      <th>Price</th>
+      <th>Hops</th>
+      <!-- Add more TH elements for additional columns -->
+    </tr>
+    <tr>
+        <td>{{ booked_flight['Airline'] or booked_flight['airline']}}</td>
+        <td>{{ booked_flight['AirlineID'] or booked_flight['airlineid']}}</td>
+        <td>{{ booked_flight['Source Airport'] or booked_flight['soruceairport'] }}</td>
+        <td>{{ booked_flight['Source Country'] or booked_flight['sorucecountry'] }}</td>
+        <td>{{ booked_flight['Destination Airport'] or booked_flight['destinationairport']  }}</td>
+        <td>{{ booked_flight['Destination Country'] or booked_flight['destinationcountry'] }}</td>
+        <td>{{ booked_flight['Path'] or booked_flight['path'] }}</td>
+        <td>{{ booked_flight['Flight Duration'] or booked_flight['flightduration'] }}</td>
+        <td>{{ booked_flight['Price'] or booked_flight['price']  }}</td>
+        <td>{{ booked_flight['Hops'] or booked_flight['hops'] }}</td>
+        
+      <!-- Add more TD elements for additional columns -->
+    </tr>
+  </table>
+{% else %}
+  <p>No details available for the booked flight.</p>
+{% endif %}
 
         <a href="/" class="home-btn">Home</a>
     </div>

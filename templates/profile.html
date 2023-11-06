@@ -80,7 +80,7 @@
 
         <h2>Booked Flight Details</h2>
 
-{% if booked_flights %}
+{% if booked_flight %}
   <table>
     <tr>
       <th>Airline</th>
@@ -93,29 +93,23 @@
       <th>Flight Duration</th>
       <th>Price</th>
       <th>Hops</th>
-      <!-- Add more TH elements for additional columns -->
     </tr>
-
-    <!-- Table data -->
-{% for flight in booked_flights %}
     <tr>
-        <td>{{ flight['Airline'] or flight['airline']}}</td>
-        <td>{{ flight['Airline ID'] or flight['airlineid']}}</td>
-        <td>{{ flight['Source Airport'] or flight['soruceairport'] }}</td>
-        <td>{{ flight['Source Country'] or flight['sorucecountry'] }}</td>
-        <td>{{ flight['Destination Airport'] or flight['destinationairport']  }}</td>
-        <td>{{ flight['Destination Country'] or flight['destinationcountry'] }}</td>
-        <td>{{ flight['Path'] or flight['path'] }}</td>
-        <td>{{ flight['hops'] or flight['Hops'] }}</td>
-        <td>{{ flight['Flight Duration'] or flight['flightduration'] }}</td>
-        <td>{{ flight['Price'] or flight['price']  }}</td>
-
-      <!-- Add more TD elements for additional columns -->
+        <td>{{ booked_flight['airline']|default(booked_flight['Airline']) }}</td>
+        <td>{{ booked_flight['airlineid']|default(booked_flight['Airline ID']) }}</td>
+        <td>{{ booked_flight['sourceairport']|default(booked_flight['Source Airport']) }}</td>
+        <td>{{ booked_flight['sourcecountry']|default(booked_flight['Source Country']) }}</td>
+        <td>{{ booked_flight['destinationairport']|default(booked_flight['Destination Airport']) }}</td>
+        <td>{{ booked_flight['destinationcountry']|default(booked_flight['Destination Country']) }}</td>
+        <td>{{ booked_flight['path']|default(booked_flight['Path']) }}</td>
+        <td>{{ booked_flight['flightduration']|default(booked_flight['Flight Duration']) }}</td>
+        <td>{{ booked_flight['price']|default(booked_flight['Price']) }}</td>
+        <td>{{ booked_flight['hops']|default(booked_flight['Hops']) }}</td>
     </tr>
-{% endfor %}
+    
   </table>
 {% else %}
-  <p>No details available for the booked flights.</p>
+  <p>No details available for the booked flight.</p>
 {% endif %}
 
         <a href="/" class="home-btn">Home</a>

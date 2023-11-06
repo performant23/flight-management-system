@@ -9,9 +9,9 @@ import re
 app = Flask(__name__)
 app.secret_key = "flight_planner"
 DB_HOST = "10.2.95.122"
-DB_NAME = "laldinpuia_elvia"
-DB_USER = "laldinpuia_elvia"
-DB_PASS = "1e1c2ec5"
+DB_NAME = "xxxxxxxxxxxxxxxxx"
+DB_USER = "xxxxxxxxxxxxxxxxx"
+DB_PASS = "xxxxxxxxxxxxxxxxx"
 
 con = psycopg2.connect(database=DB_NAME, user=DB_USER,
                        password=DB_PASS, host=DB_HOST)
@@ -34,7 +34,7 @@ def airlinedir():
     if request.method == 'POST':
         search_term = request.form.get('search_term')
 
-        # Construct the query for SELECT with filtering
+        
         query_filtered = "SELECT * FROM AIRLINE WHERE \"Name\" ILIKE %s OR \"Country\" ILIKE %s"
         cur.execute(query_filtered, (f'%{search_term}%', f'%{search_term}%'))
 
@@ -42,7 +42,7 @@ def airlinedir():
 
         return render_template("airlines.html", list_airlines=result_filtered)
 
-    # If it's a GET request or no form data, retrieve all airlines
+    
     query_all = "SELECT * FROM AIRLINE"
     cur.execute(query_all)
     result_all = cur.fetchall()
@@ -267,7 +267,7 @@ def login():
         user = cur.fetchone()
         if user:
             session['loggedin'] = True
-            # Use correct column name 'phone_number'
+            
             session['phonenumber'] = user['phone number']
             session['name'] = user['name']
             session['email'] = user['email']
@@ -290,24 +290,18 @@ def profile():
     
     # Check if the user is logged in
     if 'loggedin' in session and session['loggedin']:
-        # Get user information from the session
+        
         name = session['name']
         email = session['email']
 
-        with con.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
-          user_query = """
-          SELECT * FROM BookedFlight WHERE "email" = %s;
-            """
-          cur.execute(user_query, (email,))
-          user_data = cur.fetchone()
 
 
-        # Check if flight_id is present in the query parameters
+        
         flight_id = request.args.get('flight_id')
         flight_price = request.args.get('flight_price')
 
         if flight_id and flight_price:
-            # Fetch details of the booked flight
+            
             with con.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
                 booked_query = """
 
@@ -383,27 +377,38 @@ def profile():
                 booked_flight = cur.fetchone()
 
             with con.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
-                select_query = """
-                    SELECT * FROM bookedFlight WHERE "email" = %s AND "airlineid" = %s AND "price" = %s;
-                """
-                cur.execute(select_query, (email, flight_id, flight_price))
-                booked_flight = cur.fetchone()
+                insert_query = """
+    INSERT INTO BookedFlight ("email", "airline", "airlineid", "sourceairport", "sourcecountry", 
+                               "destinationairport", "destinationcountry", "path", "hops", 
+                               "flightduration", "price")
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                RETURNING *;
+            """
+                cur.execute(insert_query, (email, booked_flight["Airline"], booked_flight["Airline ID"], booked_flight["Source Airport"],
+                                booked_flight["Source Country"], booked_flight["Destination Airport"],
+                                booked_flight["Destination Country"], booked_flight["Path"], booked_flight["hops"],
+                                booked_flight["Flight Duration"], booked_flight["Price"]))
 
+            
+                con.commit()
+
+                    
+                inserted_record = cur.fetchone()
+
+            
+            return render_template('profile.html', name=name, email=email, booked_flight=booked_flight)
         else:
-            # If flight_id is not provided, fetch the last booked flight for this user
-            with con.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
-                select_query = """
-                    SELECT * FROM bookedflight WHERE "email" = %s;
-                """
-                cur.execute(select_query, (email,))
-                booked_flight = cur.fetchall()
+            
+            return render_template('profile.html', name=name, email=email)
+        
 
-        # Render the profile template with user information and booked flight details
-        return render_template('profile.html', name=name, email=email, booked_flight=booked_flight)
+
     else:
-        # If user is not logged in, redirect to the login page
+        
         return redirect('/login')
     
+
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     message = ''
@@ -443,7 +448,7 @@ def search():
         session['destination'] = destination
         return redirect(url_for('search_results'))
 
-    # Check if the user is logged in
+    
     if 'loggedin' not in session:
         flash('Please login or register first!', 'warning')
         return redirect(url_for('login'))
@@ -529,7 +534,6 @@ ORDER BY
     result = cur.fetchall()
     return render_template("searchresults.html", flights=result)
 
-
 from flask import request, session
 
 @app.route("/sort", methods=['POST'])
@@ -541,12 +545,12 @@ def sort():
         source = session['source']
         destination = session['destination']
     else:
-        # Handle the case when source and destination are not set in the session
+       
         return redirect(url_for('search'))
 
     cur = con.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
-    # Define the SQL query based on the selected sorting option and order
+    
     if sort_option == 'price' and sort_order == 'asc':
         query = """
 -- Find direct and indirect flights
@@ -816,7 +820,7 @@ ORDER BY
   "Flight Duration" DESC;
         """
     else:
-        # Handle invalid sorting option or order
+        
         flash('Invalid sorting option or order', 'danger')
         return redirect(url_for('search_results'))
 
@@ -829,12 +833,10 @@ ORDER BY
 
 @app.before_request
 def before_request():
-    # This function will be called before each request
+    
     if 'loggedin' not in session and request.endpoint not in ['login', 'register']:
         flash('Please login or register first!', 'warning')
         return redirect(url_for('login'))
 
-
 if __name__ == "__main__":
     app.run(debug=True)
-

@@ -159,7 +159,7 @@ button {
             <td>{{ flight['Price'] }}</td>
             <td>{{ flight['hops'] }}</td>
             <!-- Link to profile page for booking -->
-            <td><a href="/profile?flight_id={{ flight['Airline ID'] }}">Book Now</a></td>
+            <td><a href="/profile?flight_id={{ flight['Airline ID'] }}&flight_price={{ flight['Price'] }}">Book Now</a></td>
           </tr>
         {% endfor %}
       </table>

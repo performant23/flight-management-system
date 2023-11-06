@@ -287,11 +287,20 @@ def logout():
 
 @app.route('/profile')
 def profile():
+    
     # Check if the user is logged in
     if 'loggedin' in session and session['loggedin']:
         # Get user information from the session
         name = session['name']
         email = session['email']
+
+        with con.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
+          user_query = """
+          SELECT * FROM BookedFlight WHERE "email" = %s;
+            """
+          cur.execute(user_query, (email,))
+          user_data = cur.fetchone()
+
 
         # Check if flight_id is present in the query parameters
         flight_id = request.args.get('flight_id')
@@ -374,37 +383,27 @@ def profile():
                 booked_flight = cur.fetchone()
 
             with con.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
-                insert_query = """
-    INSERT INTO BookedFlight ("email", "airline", "airlineid", "sourceairport", "sourcecountry", 
-                               "destinationairport", "destinationcountry", "path", "hops", 
-                               "flightduration", "price")
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                RETURNING *;
-            """
-                cur.execute(insert_query, (email, booked_flight["Airline"], booked_flight["Airline ID"],
-                                      booked_flight["Source Airport"], booked_flight["Source Country"],
-                                      booked_flight["Destination Airport"], booked_flight["Destination Country"],
-                                      booked_flight["Path"], booked_flight["hops"],
-                                      booked_flight["Flight Duration"], booked_flight["Price"]))
-                con.commit()
+                select_query = """
+                    SELECT * FROM bookedFlight WHERE "email" = %s AND "airlineid" = %s AND "price" = %s;
+                """
+                cur.execute(select_query, (email, flight_id, flight_price))
+                booked_flight = cur.fetchone()
 
-            # Fetch the inserted record
-                inserted_record = cur.fetchone()
-        
-
-            # Render the profile template with user information and booked flight details
-            return render_template('profile.html', name=name, email=email, booked_flight=booked_flight)
         else:
-            # If flight_id is not provided, render the profile template with only user information
-            return render_template('profile.html', name=name, email=email)
-        
+            # If flight_id is not provided, fetch the last booked flight for this user
+            with con.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
+                select_query = """
+                    SELECT * FROM bookedflight WHERE "email" = %s;
+                """
+                cur.execute(select_query, (email,))
+                booked_flight = cur.fetchall()
 
+        # Render the profile template with user information and booked flight details
+        return render_template('profile.html', name=name, email=email, booked_flight=booked_flight)
     else:
         # If user is not logged in, redirect to the login page
         return redirect('/login')
     
-
-
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     message = ''
@@ -529,6 +528,7 @@ ORDER BY
     cur.execute(query, (source, destination, source, destination, source, destination))
     result = cur.fetchall()
     return render_template("searchresults.html", flights=result)
+
 
 from flask import request, session
 
@@ -834,5 +834,7 @@ def before_request():
         flash('Please login or register first!', 'warning')
         return redirect(url_for('login'))
 
+
 if __name__ == "__main__":
     app.run(debug=True)
+

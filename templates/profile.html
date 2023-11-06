@@ -80,7 +80,7 @@
 
         <h2>Booked Flight Details</h2>
 
-{% if booked_flight %}
+{% if booked_flights %}
   <table>
     <tr>
       <th>Airline</th>
@@ -95,23 +95,27 @@
       <th>Hops</th>
       <!-- Add more TH elements for additional columns -->
     </tr>
+
+    <!-- Table data -->
+{% for flight in booked_flights %}
     <tr>
-        <td>{{ booked_flight['Airline'] or booked_flight['airline']}}</td>
-        <td>{{ booked_flight['AirlineID'] or booked_flight['airlineid']}}</td>
-        <td>{{ booked_flight['Source Airport'] or booked_flight['soruceairport'] }}</td>
-        <td>{{ booked_flight['Source Country'] or booked_flight['sorucecountry'] }}</td>
-        <td>{{ booked_flight['Destination Airport'] or booked_flight['destinationairport']  }}</td>
-        <td>{{ booked_flight['Destination Country'] or booked_flight['destinationcountry'] }}</td>
-        <td>{{ booked_flight['Path'] or booked_flight['path'] }}</td>
-        <td>{{ booked_flight['Flight Duration'] or booked_flight['flightduration'] }}</td>
-        <td>{{ booked_flight['Price'] or booked_flight['price']  }}</td>
-        <td>{{ booked_flight['Hops'] or booked_flight['hops'] }}</td>
-        
+        <td>{{ flight['Airline'] or flight['airline']}}</td>
+        <td>{{ flight['Airline ID'] or flight['airlineid']}}</td>
+        <td>{{ flight['Source Airport'] or flight['soruceairport'] }}</td>
+        <td>{{ flight['Source Country'] or flight['sorucecountry'] }}</td>
+        <td>{{ flight['Destination Airport'] or flight['destinationairport']  }}</td>
+        <td>{{ flight['Destination Country'] or flight['destinationcountry'] }}</td>
+        <td>{{ flight['Path'] or flight['path'] }}</td>
+        <td>{{ flight['hops'] or flight['Hops'] }}</td>
+        <td>{{ flight['Flight Duration'] or flight['flightduration'] }}</td>
+        <td>{{ flight['Price'] or flight['price']  }}</td>
+
       <!-- Add more TD elements for additional columns -->
     </tr>
+{% endfor %}
   </table>
 {% else %}
-  <p>No details available for the booked flight.</p>
+  <p>No details available for the booked flights.</p>
 {% endif %}
 
         <a href="/" class="home-btn">Home</a>
